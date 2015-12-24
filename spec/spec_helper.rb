@@ -1,13 +1,13 @@
-require "simplecov"
-require "coveralls"
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+require 'simplecov'
+require 'coveralls'
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
   SimpleCov::Formatter::HTMLFormatter,
   Coveralls::SimpleCov::Formatter
-]
-SimpleCov.start { add_filter "/spec/" }
+])
+SimpleCov.start { add_filter '/spec/' }
 
-require "lita-timezone"
-require "lita/rspec"
+require 'lita-timezone'
+require 'lita/rspec'
 require 'timecop'
 
 # A compatibility mode is provided for older plugins upgrading from Lita 3. Since this plugin
