@@ -11,12 +11,12 @@ module Lita
       route(/^time (?<time>([\d]{1,2}:[\d]{1,2})|now) from (?<zone1>.*) to (?<zone2>.*)$/,
             :time_between_locations, command: :true, help:
             { 'time 10:00 from Brasilia to Beijing' => 'Time in Beijing for 10:00 in Brasilia',
-              'time now from Brasilia to Beijing' => 'Time in Beijing for current time in Brasilia'})
+              'time now from Brasilia to Beijing' => 'Time in Beijing for current time in Brasilia' })
 
       route(/^available timezones( containing (?<filter>\w+))?$/,
             :list_timezones, command: :true, help:
             { 'available timezones' => 'All timezones names available for use',
-              'available timezones containing Pacific' => 'Timezones that contains Pacific in the name'})
+              'available timezones containing Pacific' => 'Timezones that contains Pacific in the name' })
 
       def initialize(robot)
         super
