@@ -2,9 +2,21 @@ module Lita
   module Handlers
     class Timezone < Handler
       config :default_zone, type: String, required: true
-      route(/^time (?<time>([\d]{1,2}:[\d]{1,2})|now) in (?<zone1>.*)$/, :time_in_other_timezone, command: :true)
-      route(/^time (?<time>([\d]{1,2}:[\d]{1,2})|now) from (?<zone1>.*) to (?<zone2>.*)$/, :time_between_locations, command: :true)
-      route(/^available timezones( containing (?<filter>\w+))?$/, :list_timezones, command: :true)
+
+      route(/^time (?<time>([\d]{1,2}:[\d]{1,2})|now) in (?<zone1>.*)$/,
+            :time_in_other_timezone, command: :true, help:
+            { 'time 10:00 in Brasilia' => 'Time in Brasilia for 10:00 in the default_zone',
+              'time now in Brasilia' => 'Time in Brasilia for current time' })
+
+      route(/^time (?<time>([\d]{1,2}:[\d]{1,2})|now) from (?<zone1>.*) to (?<zone2>.*)$/,
+            :time_between_locations, command: :true, help:
+            { 'time 10:00 from Brasilia to Beijing' => 'Time in Beijing for 10:00 in Brasilia',
+              'time now from Brasilia to Beijing' => 'Time in Beijing for current time in Brasilia'})
+
+      route(/^available timezones( containing (?<filter>\w+))?$/,
+            :list_timezones, command: :true, help:
+            { 'available timezones' => 'All timezones names available for use',
+              'available timezones containing Pacific' => 'Timezones that contains Pacific in the name'})
 
       def initialize(robot)
         super
@@ -24,7 +36,6 @@ module Lita
           time_in_new_time_zone = requested_time.in_time_zone(requested_zone)
           response.reply t('messages.response_in_zone', time: format_time(time_in_new_time_zone))
         end
-
       end
 
       def time_between_locations(response)
@@ -43,12 +54,11 @@ module Lita
           time_in_new_time_zone = original_time.in_time_zone(second_zone)
 
           response.reply t('messages.response_from_to_zone',
-            time: format_time(time_in_new_time_zone),
-            zone1: first_zone.name,
-            zone2: second_zone.name
-          )
+                            time: format_time(time_in_new_time_zone),
+                            zone1: first_zone.name,
+                            zone2: second_zone.name
+                          )
         end
-
       end
 
       def list_timezones(response)
@@ -60,7 +70,6 @@ module Lita
         else
           response.reply render_template('available_timezones', zones: zones)
         end
-
       end
 
       private
@@ -69,12 +78,18 @@ module Lita
         time = response.match_data[:time]
         return Time.current if time == 'now'
 
-        Time.zone.parse(time) rescue nil
+        parse_time(time)
       end
 
       def format_time(time_response)
         time_format = time_response.today? ? '%R' : '%F %R'
         time_response.strftime(time_format)
+      end
+
+      def parse_time(time, default = nil)
+        Time.zone.parse(time)
+      rescue ArgumentError
+        default
       end
 
       Lita.register_handler(self)
