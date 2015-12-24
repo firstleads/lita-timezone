@@ -1,0 +1,12 @@
+en:
+  lita:
+    handlers:
+      timezone:
+        messages:
+          invalid_time: 'You must inform a valid time in the hh:mm format'
+          invalid_zone: 'You must inform a valid timezone'
+          invalid_first_zone: 'You must inform a valid "from" timezone'
+          invalid_second_zone: 'You must inform a valid "to" timezone'
+          response_in_zone: "Right now it's %{time}"
+          response_from_to_zone: "Right now it's %{time} in %{zone2} using %{zone1} as reference"
+          no_zones_found: 'No timezones found containing %{zone}'
