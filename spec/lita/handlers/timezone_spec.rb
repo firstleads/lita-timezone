@@ -107,15 +107,16 @@ describe Lita::Handlers::Timezone, lita_handler: true do
     context 'without filtering results' do
       it 'replies with all timezones' do
         send_command('available timezones', from: room)
-        expect(replies.last.lines.size).to eq 745
+        expect(replies.last.lines).to_not be_empty
       end
     end
 
     context 'filtering results' do
       context 'when filter matches something' do
-        it 'replies with timezones that matches the filter' do
+        it 'replies only with timezones that matches the filter' do
           send_command('available timezones containing Pacific', from: room)
-          expect(replies.last.lines.size).to eq 47
+          pacific_lines = replies.last.lines.select { |line| line.include? 'Pacific' }
+          expect(replies.last.lines.size).to eq pacific_lines.size
         end
       end
 
